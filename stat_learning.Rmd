@@ -106,3 +106,43 @@ lasso_cv |>
   geom_point()
 ```
 
+```{r}
+lasso_fit = 
+  glmnet(x, y, lambda = lambda_opt)
+
+lasso_fit |> broom::tidy()
+```
+
+## CLustering
+```{r}
+pokemon_df =
+  read_csv("data/extra_topic_data/pokemon.csv") |>
+  janitor::clean_names() |>
+  select(hp, speed)
+```
+
+```{r}
+pokemon_df |>
+  ggplot(aes(x = hp, y = speed)) +
+  geom_point()
+```
+
+Fit kmeans clistering to this dataset.
+```{r}
+kmeans_fit =
+  kmeans(x = pokemon_df, centers =3)
+```
+
+Use `broom` to get nice results
+```{r}
+pokemon_df =
+  broom::augment(kmeans_fit, pokemon_df)
+```
+
+Look at results!
+```{r}
+pokemon_df |>
+  ggplot(aes(x = hp, y = speed, color = .cluster)) +
+  geom_point()
+```
+
